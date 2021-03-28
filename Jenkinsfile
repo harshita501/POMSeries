@@ -1,60 +1,51 @@
-pipeline{
-    
-    agent any
-    stages{
-        stage("Build"){
+pipeline { 
+agent any 
+    stages { 
+        
+        stage ('Build') { 
             steps{
-            echo("Building")
+                echo "Building the test automation for demo cart app"
             }
         }
-    }
-    
-    stages{
-        stage("Deploy on Dev"){
-            steps{
-            echo("deploy on dev")
+        
+        stage('Test') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh "mvn clean install"
+                }
             }
         }
-    }
-    
-    stages{
-        stage("Deploy on QA"){
-            steps{
-            echo("deploy on qa")
+                
+     
+        stage('Publish Allure Reports') {
+           steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: '/allure-results']]
+                    ])
+                }
             }
         }
-    }
-    
-    stages{
-        stage("Regression test"){
+        
+        
+        stage('Publish Extent Report'){
             steps{
-            echo("running regression test")
+                     publishHTML([allowMissing: false,
+                                  alwaysLinkToLastBuild: false, 
+                                  keepAll: false, 
+                                  reportDir: 'build', 
+                                  reportFiles: 'TestExecutionReport.html', 
+                                  reportName: 'HTML Extent Report', 
+                                  reportTitles: ''])
             }
         }
+        
+        
+        
     }
-    
-    stages{
-        stage("deploy on stage"){
-            steps{
-            echo("deploy on stage")
-            }
-        }
-    }
-    
-    stages{
-        stage("Sanity test on stage"){
-            steps{
-            echo("Sanity test on stage")
-            }
-        }
-    }
-    
-    stages{
-        stage("Deploy on PROD"){
-            steps{
-            echo("deploy on PROD")
-            }
-        }
-    }
-   
-}
+
+ }
