@@ -18,7 +18,7 @@
 </test>
 	
 	
-	<test name="Accounts Page Test">
+<test name="Accounts Page Test">
 	
         <classes>
 			<class name="com.qa.opencart.tests.AccountsPageTest" />
@@ -33,6 +33,6 @@
 		</classes>
 
 </test>
-
+ 
 
 </suite>

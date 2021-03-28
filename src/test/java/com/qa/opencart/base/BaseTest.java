@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 
 import com.qa.opencart.factory.DriverFactory;
 import com.qa.opencart.pages.AccountsPage;
@@ -23,11 +24,19 @@ public class BaseTest {
 	public ProductInfoPage productInfoPage;
 	public RegisterPage registerPage;
 	
+	@Parameters({"browser","version"})
 	@BeforeTest
-	public void setUp() {
+	public void setUp(String browserName, String browserVersion) {
 		df = new DriverFactory();
 		prop = df.init_prop();
-		 driver = df.init_driver(prop);
+		
+		String browser = prop.getProperty("chrome");
+		if(browserName!=null) {
+			browser = browserName;
+		}
+		
+		
+		 driver = df.init_driver(browser, browserVersion);
 		 loginPage = new LoginPage(driver);	 	
 	}
 	
